@@ -37,10 +37,10 @@ namespace WsFederationPoC
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
         }
 
-        public void ConfigureMvc(IAppBuilder app)
+        private static void ConfigureMvc(IAppBuilder app)
         {
-            AreaRegistration.RegisterAllAreas();
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //AreaRegistration.RegisterAllAreas();
+            //RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
     }
 }

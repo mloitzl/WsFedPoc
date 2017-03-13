@@ -1,0 +1,1 @@
+D:\github\WsFederationPoC\WsFederationSharePointAddIn\bin\Debug\WsFederationSharePointAddIn.debugapp

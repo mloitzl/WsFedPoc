@@ -15,7 +15,21 @@ namespace WsFederationPoC.Controllers
         // GET: Home
         public ActionResult Index()
         {
+            //var sharepointUrl = new Uri(Request.QueryString["SPHostUrl"]);
+            //var clientContext = TokenHelper.GetS2SClientContextWithClaimsIdentity(sharepointUrl,
+            //   Thread.CurrentPrincipal,
+            //   TokenHelper.IdentityClaimType.SMTP, TokenHelper.ClaimProviderType.SAML, false);
+
+            //var web = clientContext.Web;
+            //var user = clientContext.Web.CurrentUser;
+            //clientContext.Load(web, w => w.Title);
+            //clientContext.Load(user, u => u.Title);
+            //clientContext.ExecuteQuery();
+
             ViewBag.ClaimsIdentity = Thread.CurrentPrincipal.Identity;
+            //ViewBag.SharePointUser = user.Title;
+            //ViewBag.SharePointWeb = web.Title;
+
             var claimsIdentity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
             ViewBag.DisplayName = claimsIdentity.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             return View();
