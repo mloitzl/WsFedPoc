@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
@@ -15,8 +15,8 @@ namespace WsFederationPoC.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            ViewBag.ClaimsIdentity = System.Threading.Thread.CurrentPrincipal.Identity;
-            var claimsIdentity = System.Threading.Thread.CurrentPrincipal.Identity as ClaimsIdentity;
+            ViewBag.ClaimsIdentity = Thread.CurrentPrincipal.Identity;
+            var claimsIdentity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
             ViewBag.DisplayName = claimsIdentity.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
             return View();
         }
@@ -25,16 +25,16 @@ namespace WsFederationPoC.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                var owinContext = this.Request.GetOwinContext();
-                var authProperties = new AuthenticationProperties();
-                authProperties.RedirectUri = new Uri(this.HttpContext.Request.Url, new UrlHelper(this.ControllerContext.RequestContext).Action("PostLogOff")).AbsoluteUri;
+                var owinContext = Request.GetOwinContext();
+                var authProperties = new AuthenticationProperties
+                {
+                    RedirectUri = new Uri(HttpContext.Request.Url,
+                        new UrlHelper(ControllerContext.RequestContext).Action("PostLogOff")).AbsoluteUri
+                };
                 owinContext.Authentication.SignOut(authProperties);
                 return View();
             }
-            else
-            {
-                throw new InvalidOperationException("User is not authenticated");
-            }
+            throw new InvalidOperationException("User is not authenticated");
         }
 
         [AllowAnonymous]
@@ -44,5 +44,3 @@ namespace WsFederationPoC.Controllers
         }
     }
 }
-
-

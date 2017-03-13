@@ -73,6 +73,10 @@
             </tr>
         }
     </table>
+    @if (ViewBag.ClaimsIdentity.IsAuthenticated)
+    {
+        @Html.ActionLink("Logout", "LogOff");
+    }
 </div>
 </body>
 </html>
