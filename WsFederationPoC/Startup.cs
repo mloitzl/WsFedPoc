@@ -1,4 +1,6 @@
-﻿using Microsoft.Owin;
+﻿using System.Web.Mvc;
+using System.Web.Routing;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.WsFederation;
@@ -14,6 +16,7 @@ namespace WsFederationPoC
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            ConfigureMvc(app);
         }
 
         private void ConfigureAuth(IAppBuilder app)
@@ -32,6 +35,12 @@ namespace WsFederationPoC
                 });
 
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
+        }
+
+        public void ConfigureMvc(IAppBuilder app)
+        {
+            AreaRegistration.RegisterAllAreas();
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
     }
 }
