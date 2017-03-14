@@ -26,7 +26,7 @@ using X509SigningCredentials = Microsoft.IdentityModel.SecurityTokenService.X509
 
 namespace WsFederationPoC
 {
-    public partial class TokenHelper
+    public static partial class TokenHelper
     {
         #region public fields
 

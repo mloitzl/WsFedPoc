@@ -6,6 +6,7 @@ using System.Net;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Configuration;
+using Microsoft.IdentityModel.Claims;
 
 namespace WsFederationPoC
 {
@@ -288,7 +289,15 @@ namespace WsFederationPoC
             }
             else
             {
-                SharePointContextProvider.current = new SharePointHighTrustContextProvider();
+                if (HttpContext.Current.User.Identity.GetType() == typeof(System.Security.Claims.ClaimsIdentity))
+                {
+                    SharePointContextProvider.current = new SharePointHighTrustSamlContextProvider();
+                }
+                else
+                {
+                    SharePointContextProvider.current = new SharePointHighTrustContextProvider();
+                }
+                
             }
         }
 
