@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Solution xmlns="http://schemas.microsoft.com/sharepoint/" SolutionId="1a922829-abd9-4494-be95-c352a6a8bd14" SharePointProductVersion="16.0">
+  <Assemblies>
+    <Assembly Location="ClaimsWebPart.dll" DeploymentTarget="GlobalAssemblyCache">
+      <SafeControls>
+        <SafeControl Assembly="ClaimsWebPart, Version=1.0.0.0, Culture=neutral, PublicKeyToken=746d3d4c19ec2b80" Namespace="ClaimsWebPart.ClaimsWebPart" TypeName="*" />
+      </SafeControls>
+    </Assembly>
+  </Assemblies>
+  <FeatureManifests>
+    <FeatureManifest Location="ClaimsWebPart_Feature1\Feature.xml" />
+  </FeatureManifests>
+</Solution>

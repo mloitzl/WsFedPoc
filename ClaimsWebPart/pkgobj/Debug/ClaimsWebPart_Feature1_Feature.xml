@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Feature xmlns="http://schemas.microsoft.com/sharepoint/" Id="fb5ccd33-2d71-4a88-9330-bec07b4c7731" Scope="Site" Title="ClaimsWebPart Feature1">
+  <ElementManifests>
+    <ElementManifest Location="ClaimsWebPart\Elements.xml" />
+    <ElementFile Location="ClaimsWebPart\ClaimsWebPart.webpart" />
+  </ElementManifests>
+</Feature>

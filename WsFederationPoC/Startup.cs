@@ -26,21 +26,30 @@ namespace WsFederationPoC
                 {
                     AuthenticationType = CookieAuthenticationDefaults.AuthenticationType
                 });
+
+            //app.UseWsFederationAuthentication(
+            //new WsFederationAuthenticationOptions
+            //{
+            //    MetadataAddress = "https://sts.swd.corp/federationmetadata/2007-06/federationmetadata.xml",
+            //    Wtrealm = "urn:wsfederationpoc"
+            //    //Wreply = "https://localhost:44311/"
+            //});
+
             app.UseWsFederationAuthentication(
-                new WsFederationAuthenticationOptions
-                {
-                    MetadataAddress = "https://sts.swd.corp/federationmetadata/2007-06/federationmetadata.xml",
-                    Wtrealm = "urn:wsfederationpoc"
-                    //Wreply = "https://localhost:44311/"
-                });
+            new WsFederationAuthenticationOptions
+            {
+                MetadataAddress = "https://sts.acme.lab/federationmetadata/2007-06/federationmetadata.xml",
+                Wtrealm = "urn:wsfederationpoc"
+            });
+
 
             app.SetDefaultSignInAsAuthenticationType(CookieAuthenticationDefaults.AuthenticationType);
         }
 
         private static void ConfigureMvc(IAppBuilder app)
         {
-            //AreaRegistration.RegisterAllAreas();
-            //RouteConfig.RegisterRoutes(RouteTable.Routes);
+            AreaRegistration.RegisterAllAreas();
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
     }
 }

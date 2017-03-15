@@ -2,3 +2,4 @@ D:\github\WsFederationPoC\WsFederationSharePointAddIn\bin\Debug\WsFederationShar
 D:\github\WsFederationPoC\WsFederationSharePointAddIn\bin\Debug\WsFederationSharePointAddIn.pdb
 D:\github\WsFederationPoC\WsFederationSharePointAddIn\obj\Debug\WsFederationSharePointAddIn.dll
 D:\github\WsFederationPoC\WsFederationSharePointAddIn\obj\Debug\WsFederationSharePointAddIn.pdb
+D:\github\WsFederationPoC\WsFederationSharePointAddIn\obj\Debug\WsFederationSharePointAddIn.csprojResolveAssemblyReference.cache

@@ -15,30 +15,33 @@ namespace WsFederationPoC.Controllers
         // GET: Home
         public ActionResult Index()
         {
-            
+
             //var clientContext = TokenHelper.GetS2SClientContextWithClaimsIdentity(sharepointUrl,
             //   Thread.CurrentPrincipal.Identity,
             //   TokenHelper.IdentityClaimType.SMTP, TokenHelper.ClaimProviderType.SAML, false);
-
-            var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
-            using (var clientContext = spContext.CreateUserClientContextForSPHost())
+            try
             {
-                var web = clientContext.Web;
-                var user = clientContext.Web.CurrentUser;
-                clientContext.Load(web, w => w.Title);
-                clientContext.Load(user, u => u.Title);
-                try
+                var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
+                using (var clientContext = spContext.CreateUserClientContextForSPHost())
                 {
+                    var web = clientContext.Web;
+                    var user = clientContext.Web.CurrentUser;
+                    clientContext.Load(web, w => w.Title);
+                    clientContext.Load(user, u => u.Title, u => u.UserId);
+
                     clientContext.ExecuteQuery();
                     ViewBag.SharePointUser = user.Title;
+                    ViewBag.SharePointUserNameId = user.UserId.NameId;
+                    ViewBag.SharePointUserNameIdIssuer = user.UserId.NameIdIssuer;
                     ViewBag.SharePointWeb = web.Title;
                 }
-                catch (Exception)
-                {
-                    ViewBag.SharePointUser = "Error in ExecuteQuery";
-                    ViewBag.SharePointWeb = "Error in ExecuteQuery";
-                }
             }
+            catch (Exception)
+            {
+                ViewBag.SharePointUser = "Error in ExecuteQuery";
+                ViewBag.SharePointWeb = "Error in ExecuteQuery";
+            }
+
 
             ViewBag.ClaimsIdentity = Thread.CurrentPrincipal.Identity;
 
