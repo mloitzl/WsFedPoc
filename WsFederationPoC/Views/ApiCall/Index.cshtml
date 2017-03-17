@@ -1,0 +1,24 @@
+﻿@model dynamic
+
+<h2>Api Calls</h2>
+
+<h3><pre>/api/demo/all</pre></h3>
+<div id="all"></div>
+
+<h3><pre>/api/sharepoint/hostwebuser</pre></h3>
+<div id="hostwebuser"></div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            WsFederationPoc.Page.init({
+                remoteAppUrl: "@ViewBag.RemoteAppUrl",
+                SPHostUrl: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPHostUrl"),
+                SPLanguage: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPLanguage"),
+                SPClientTag: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPClientTag"),
+                SPProductNumber: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPProductNumber")
+            });
+        });
+    </script>
+}

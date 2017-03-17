@@ -11,6 +11,7 @@ using Microsoft.SharePoint.WebControls;
 
 namespace ClaimsWebPart.ClaimsWebPart
 {
+    // http://sharepointpals.com/post/How-to-Read-claims-of-a-User-in-SharePoint-2013
     [ToolboxItemAttribute(false)]
     public class ClaimsWebPart : WebPart
     {

@@ -199,8 +199,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\SharePointController.cs" />
     <Compile Include="Api\DemoController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\ApiCallController.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\EnvironmentConfig.cs" />
     <Compile Include="Models\Item.cs" />
@@ -227,6 +229,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.1.min.map" />
+    <Content Include="Views\ApiCall\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

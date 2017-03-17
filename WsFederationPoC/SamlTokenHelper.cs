@@ -601,6 +601,79 @@ namespace WsFederationPoC
         {
             httpContext.Session[SPContextKey] = spContext as SharePointHighTrustSamlContext;
         }
+
+        public override SharePointContext GetSharePointContext(HttpContextBase httpContext)
+        {
+            return CreateSharePointContext(httpContext.Request);
+        }
+
+        public override SharePointContext CreateSharePointContext(HttpRequestBase httpRequest)
+        {
+            if (httpRequest == null)
+            {
+                throw new ArgumentNullException("httpRequest");
+            }
+
+            // SPHostUrl
+            Uri spHostUrl = GetUrlParameterFromRequest(httpRequest, SharePointContext.SPHostUrlKey);
+            if (spHostUrl == null)
+            {
+                return null;
+            }
+
+            // SPAppWebUrl
+            Uri spAppWebUrl = GetUrlParameterFromRequest(httpRequest, SharePointContext.SPAppWebUrlKey);
+
+            // SPLanguage
+            string spLanguage = GetStringParameterFromRequest(httpRequest, SharePointContext.SPLanguageKey);
+            if (string.IsNullOrEmpty(spLanguage))
+            {
+                return null;
+            }
+
+            // SPClientTag
+            string spClientTag = GetStringParameterFromRequest(httpRequest, SharePointContext.SPClientTagKey);
+            if (string.IsNullOrEmpty(spClientTag))
+            {
+                return null;
+            }
+
+            // SPProductNumber
+            string spProductNumber = GetStringParameterFromRequest(httpRequest, SharePointContext.SPProductNumberKey);
+            if (string.IsNullOrEmpty(spProductNumber))
+            {
+                return null;
+            }
+
+            return CreateSharePointContext(spHostUrl, spAppWebUrl, spLanguage, spClientTag, spProductNumber, httpRequest);
+        }
+        private string GetStringParameterFromRequest(HttpRequestBase httpRequest, string parameterName)
+        {
+            string str = httpRequest.QueryString[parameterName];
+            if (string.IsNullOrEmpty(str))
+            {
+                str = httpRequest.Headers[parameterName];
+            }
+
+            return str;
+        }
+        private Uri GetUrlParameterFromRequest(HttpRequestBase httpRequest, string parameterName)
+        {
+            string hostUrlString = TokenHelper.EnsureTrailingSlash(httpRequest.QueryString[parameterName]);
+            if (string.IsNullOrEmpty(hostUrlString))
+            {
+                hostUrlString = TokenHelper.EnsureTrailingSlash(httpRequest.Headers[parameterName]);
+            }
+
+            Uri url;
+            if (Uri.TryCreate(HttpUtility.UrlDecode(hostUrlString), UriKind.Absolute, out url) &&
+                (url.Scheme == Uri.UriSchemeHttp || url.Scheme == Uri.UriSchemeHttps))
+            {
+                return url;
+            }
+
+            return null;
+        }
     }
 
     #endregion HighTrust

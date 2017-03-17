@@ -409,7 +409,7 @@ namespace WsFederationPoC
         /// </summary>
         /// <param name="httpRequest">The HTTP request.</param>
         /// <returns>The SharePointContext instance. Returns <c>null</c> if errors occur.</returns>
-        public SharePointContext CreateSharePointContext(HttpRequestBase httpRequest)
+        public virtual SharePointContext CreateSharePointContext(HttpRequestBase httpRequest)
         {
             if (httpRequest == null)
             {
@@ -471,7 +471,7 @@ namespace WsFederationPoC
         /// </summary>
         /// <param name="httpContext">The HTTP context.</param>
         /// <returns>The SharePointContext instance. Returns <c>null</c> if not found and a new instance can't be created.</returns>
-        public SharePointContext GetSharePointContext(HttpContextBase httpContext)
+        public virtual SharePointContext GetSharePointContext(HttpContextBase httpContext)
         {
             if (httpContext == null)
             {

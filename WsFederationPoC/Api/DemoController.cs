@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using WsFederationPoC.Models;
 
@@ -12,6 +13,7 @@ namespace WsFederationPoC.Api
         [Route("all")]
         public async Task<IHttpActionResult> AllItems()
         {
+            var id = HttpContext.Current.User.Identity;
             return Ok(await Task.FromResult(DataContext.GetItems()));
         }
 
