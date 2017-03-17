@@ -5,6 +5,8 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
+using Microsoft.SharePoint.Client;
+using Newtonsoft.Json;
 using ClaimTypes = System.IdentityModel.Claims.ClaimTypes;
 
 namespace WsFederationPoC.Controllers
@@ -50,6 +52,12 @@ namespace WsFederationPoC.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public ActionResult Setup()
+        {
+            return View();
+        }
+
         public ActionResult LogOff()
         {
             if (User.Identity.IsAuthenticated)
@@ -71,5 +79,69 @@ namespace WsFederationPoC.Controllers
         {
             return View();
         }
+
+        public ActionResult Install()
+        {
+           
+            var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
+            using (var clientContext = spContext.CreateAppOnlyClientContextForSPHost())
+            {
+                var web = clientContext.Web;
+                
+                clientContext.Load(web, w => w.Title);
+                clientContext.ExecuteQuery();
+                ViewBag.SharePointWeb = web.Title;
+                var remoteAppUrl = $"{Request.Url.Scheme}://{Request.Url.DnsSafeHost}:{Request.Url.Port}{Request.ApplicationPath}";
+                clientContext.Site.AddJsBlock("WsFederationPocScriptLink",
+                    $"{RegistrationScript}({JsonConvert.SerializeObject(new {remoteAppUrl})});", 1000);
+            }
+
+            return View("InstallResult");
+        }
+
+        public const string RegistrationScript = @"
+			(function (siteInfo, jsFiles) {		
+				window.WsFederationPoc = window.WsFederationPoc || {};
+                window.WsFederationPoc._readyCallbackQueue = [];
+			    window.WsFederationPoc.ready = function(callback) { 
+                    WsFederationPoc._readyCallbackQueue.push(callback); 
+                }
+
+				function loadScript(url, init) {
+					var head = document.getElementsByTagName('head')[0];
+					var script = document.createElement('script');
+					script.src = url;					
+					
+					if (init) {
+						var done = false;
+						script.onload = script.onreadystatechange = function () {
+							if (!done && (!this.readyState
+										|| this.readyState == 'loaded'
+										|| this.readyState == 'complete')) {
+								done = true;
+																			
+								// Handle memory leak in IE
+								script.onload = script.onreadystatechange = null;
+								head.removeChild(script);
+								
+								init();
+							}
+						};
+
+						if (typeof g_MinimalDownload != 'undefined' && g_MinimalDownload && (window.location.pathname.toLowerCase()).endsWith('/_layouts/15/start.aspx') && typeof asyncDeltaManager != 'undefined') {
+							// Register script for MDS if possible
+							RegisterModuleInit(url, init); //MDS registration
+						}
+					}
+					
+					head.appendChild(script);
+				}
+				
+                loadScript(siteInfo.remoteAppUrl + '/Scripts/jquery-3.1.1.min.js', function() {
+				    loadScript(siteInfo.remoteAppUrl + '/Scripts/app.js', function() {
+					    WsFederationPoc.Page.init(siteInfo, jsFiles);
+				    });				
+				});
+			})";
     }
 }

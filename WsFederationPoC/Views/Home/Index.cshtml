@@ -1,87 +1,73 @@
 ﻿@model dynamic
 
-@{
-    Layout = null;
-}
+<h1>Claims web</h1>
+<h2>Welcome: @ViewBag.DisplayName</h2>
+<p>SharePoint User: @ViewBag.SharePointUser</p>
+<p>SharePoint User Name Id: @ViewBag.SharePointUserNameId</p>
+<p>SharePoint User name Id Issuer: @ViewBag.SharePointUserNameIdIssuer</p>
+<p>SharePoint Web: @ViewBag.SharePointWeb</p>
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-    <h1>Claims web</h1>
-    <h2>Welcome: @ViewBag.DisplayName</h2>
-    <p>SharePoint User: @ViewBag.SharePointUser</p>
-    <p>SharePoint User Name Id: @ViewBag.SharePointUserNameId</p>
-    <p>SharePoint User name Id Issuer: @ViewBag.SharePointUserNameIdIssuer</p>
-    <p>SharePoint Web: @ViewBag.SharePointWeb</p>
-
-    <h3>Values from Identity</h3>
-    <table>
-        <tr>
-            <th>
-                IsAuthenticated
-            </th>
-            <td>
-                @ViewBag.ClaimsIdentity.IsAuthenticated
-            </td>
-        </tr>
-        <tr>
-            <th>
-                Name
-            </th>
-            <td>
-                @ViewBag.ClaimsIdentity.Name
-            </td>
-        </tr>
-    </table>
-    <h3>Claims from ClaimsIdentity</h3>
-    <table border="1">
-        <tr>
-            <th>
-                Claim Type
-            </th>
-            <th>
-                Claim Value
-            </th>
-            <th>
-                Value Type
-            </th>
-            <th>
-                Subject Name
-            </th>
-            <th>
-                Issuer Name
-            </th>
-        </tr>
-        @foreach (System.Security.Claims.Claim claim in ViewBag.ClaimsIdentity.Claims)
-        {
-            <tr>
-                <td>
-                    @claim.Type
-                </td>
-                <td>
-                    @claim.Value
-                </td>
-                <td>
-                    @claim.ValueType
-                </td>
-                <td>
-                    @claim.Subject.Name
-                </td>
-                <td>
-                    @claim.Issuer
-                </td>
-            </tr>
-        }
-    </table>
-    @if (ViewBag.ClaimsIdentity.IsAuthenticated)
+<h3>Values from Identity</h3>
+<table>
+    <tr>
+        <th>
+            IsAuthenticated
+        </th>
+        <td>
+            @ViewBag.ClaimsIdentity.IsAuthenticated
+        </td>
+    </tr>
+    <tr>
+        <th>
+            Name
+        </th>
+        <td>
+            @ViewBag.ClaimsIdentity.Name
+        </td>
+    </tr>
+</table>
+<h3>Claims from ClaimsIdentity</h3>
+<table border="1">
+    <tr>
+        <th>
+            Claim Type
+        </th>
+        <th>
+            Claim Value
+        </th>
+        <th>
+            Value Type
+        </th>
+        <th>
+            Subject Name
+        </th>
+        <th>
+            Issuer Name
+        </th>
+    </tr>
+    @foreach (System.Security.Claims.Claim claim in ViewBag.ClaimsIdentity.Claims)
     {
-        @Html.ActionLink("Logout", "LogOff");
+        <tr>
+            <td>
+                @claim.Type
+            </td>
+            <td>
+                @claim.Value
+            </td>
+            <td>
+                @claim.ValueType
+            </td>
+            <td>
+                @claim.Subject.Name
+            </td>
+            <td>
+                @claim.Issuer
+            </td>
+        </tr>
     }
-</div>
-</body>
-</html>
+</table>
+@if (ViewBag.ClaimsIdentity.IsAuthenticated)
+{
+    @Html.ActionLink("Logout", "LogOff");
+}
+@Html.ActionLink("Setup", "Setup");

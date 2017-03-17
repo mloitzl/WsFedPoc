@@ -3,4 +3,7 @@
   &lt;Assembly Path="C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Web.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\github\WsFederationPoC\WsFederationSharePointAddInWeb\Bin\Microsoft.IdentityModel.Extensions.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Windows\assembly\GAC_MSIL\Microsoft.IdentityModel\3.5.0.0__31bf3856ad364e35\Microsoft.IdentityModel.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\github\WsFederationPoC\WsFederationPoC\Bin\System.Web.Http.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\github\WsFederationPoC\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\github\WsFederationPoC\WsFederationPoC\Bin\OfficeDevPnP.Core.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

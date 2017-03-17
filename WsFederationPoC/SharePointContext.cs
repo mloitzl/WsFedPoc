@@ -199,7 +199,7 @@ namespace WsFederationPoC
         /// Creates app only ClientContext for the SharePoint host.
         /// </summary>
         /// <returns>A ClientContext instance.</returns>
-        public ClientContext CreateAppOnlyClientContextForSPHost()
+        public virtual ClientContext CreateAppOnlyClientContextForSPHost()
         {
             return CreateClientContext(this.SPHostUrl, this.AppOnlyAccessTokenForSPHost);
         }
@@ -208,7 +208,7 @@ namespace WsFederationPoC
         /// Creates an app only ClientContext for the SharePoint app web.
         /// </summary>
         /// <returns>A ClientContext instance.</returns>
-        public ClientContext CreateAppOnlyClientContextForSPAppWeb()
+        public virtual ClientContext CreateAppOnlyClientContextForSPAppWeb()
         {
             return CreateClientContext(this.SPAppWebUrl, this.AppOnlyAccessTokenForSPAppWeb);
         }
@@ -878,6 +878,27 @@ namespace WsFederationPoC
             }
 
             accessToken = Tuple.Create(tokenRenewalHandler(), expiresOn);
+        }
+
+        /// <summary>
+        /// Creates app only ClientContext for the SharePoint host.
+        /// </summary>
+        /// <returns>A ClientContext instance.</returns>
+        public override ClientContext CreateAppOnlyClientContextForSPHost()
+        {
+            return TokenHelper.GetS2SClientContextWithClaimsIdentity(this.SPHostUrl,
+            logonUserIdentity, TokenHelper.DefaultIdentityClaimType,
+            TokenHelper.DefaultClaimProviderType, true);
+        }
+        /// <summary>
+        /// Creates an app only ClientContext for the SharePoint app web.
+        /// </summary>
+        /// <returns>A ClientContext instance.</returns>
+        public override ClientContext CreateAppOnlyClientContextForSPAppWeb()
+        {
+            return TokenHelper.GetS2SClientContextWithClaimsIdentity(this.SPAppWebUrl,
+            logonUserIdentity, TokenHelper.DefaultIdentityClaimType,
+            TokenHelper.DefaultClaimProviderType, true);
         }
     }
 

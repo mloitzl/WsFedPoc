@@ -1,0 +1,13 @@
+﻿<div>
+    @using (Html.BeginForm("Install", "Home", routeValues: new RouteValueDictionary(Request.QueryString.AllKeys.ToDictionary(key => key, key => (object)Request.QueryString[key]))))
+    {
+        <input type="submit" value="Install" class="ms-Button" />
+    }
+</div>
+@section scripts {
+    <script type="text/javascript">
+        $(function() {
+            console.log("Hello JQuery");
+        });
+    </script>
+}
