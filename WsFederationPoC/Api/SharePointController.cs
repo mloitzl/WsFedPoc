@@ -13,6 +13,8 @@ namespace WsFederationPoC.Api
         [Route("hostwebuser")]
         public async Task<IHttpActionResult> GetUser()
         {
+            var cookies = HttpContext.Current.Request.Cookies;
+            var id = HttpContext.Current.User.Identity;
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
             using (var clientContext = spContext.CreateUserClientContextForSPHost())
             {

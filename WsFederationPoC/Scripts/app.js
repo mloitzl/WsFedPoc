@@ -40,6 +40,9 @@
                     "SPLanguage": this._siteInfo.SPLanguage,
                     "SPClientTag": this._siteInfo.SPClientTag,
                     "SPProductNumber": this._siteInfo.SPProductNumber,
+                },
+                xhrFields: {
+                    withCredentials: true
                 }
             });
         };

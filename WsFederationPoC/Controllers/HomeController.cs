@@ -14,6 +14,10 @@ namespace WsFederationPoC.Controllers
     [Authorize]
     public class HomeController : Controller
     {
+        public ActionResult Echo()
+        {
+            return View();
+        }
         // GET: Home
         public ActionResult Index()
         {
@@ -99,8 +103,31 @@ namespace WsFederationPoC.Controllers
             return View("InstallResult");
         }
 
-        public const string RegistrationScript = @"
-			(function (siteInfo, jsFiles) {		
+        private const string RegistrationScript = @"
+			(function (siteInfo, jsFiles) {
+                function init(){
+                    console.log('iFrame loaded');
+                    loadScript(siteInfo.remoteAppUrl + '/Scripts/jquery-3.1.1.min.js', function() {
+    				    loadScript(siteInfo.remoteAppUrl + '/Scripts/app.js', function() {
+                            siteInfo['SPHostUrl'] = _spPageContextInfo.siteAbsoluteUrl;
+                            siteInfo['SPLanguage'] = _spPageContextInfo.currentUICultureName;
+                            siteInfo['SPClientTag'] = _spPageContextInfo.siteClientTag;
+                            siteInfo['SPProductNumber'] = 16;
+                            WsFederationPoc.Page.init(siteInfo, jsFiles);
+				        });				
+				    });
+                }
+
+				var iFrame = document.createElement('iframe');
+                iFrame.onload = function() {
+                    init();
+                };
+
+                var body = document.getElementsByTagName('body')[0];
+                body.appendChild(iFrame);
+                
+                iFrame.src = siteInfo.remoteAppUrl + 'Home/Echo/';
+		
 				window.WsFederationPoc = window.WsFederationPoc || {};
                 window.WsFederationPoc._readyCallbackQueue = [];
 			    window.WsFederationPoc.ready = function(callback) { 
@@ -111,8 +138,8 @@ namespace WsFederationPoC.Controllers
 					var head = document.getElementsByTagName('head')[0];
 					var script = document.createElement('script');
 					script.src = url;					
-					
-					if (init) {
+
+                    if (init) {
 						var done = false;
 						script.onload = script.onreadystatechange = function () {
 							if (!done && (!this.readyState
@@ -136,12 +163,6 @@ namespace WsFederationPoC.Controllers
 					
 					head.appendChild(script);
 				}
-				
-                loadScript(siteInfo.remoteAppUrl + '/Scripts/jquery-3.1.1.min.js', function() {
-				    loadScript(siteInfo.remoteAppUrl + '/Scripts/app.js', function() {
-					    WsFederationPoc.Page.init(siteInfo, jsFiles);
-				    });				
-				});
 			})";
     }
 }
