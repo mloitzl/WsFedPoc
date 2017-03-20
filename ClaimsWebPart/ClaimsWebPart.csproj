@@ -63,7 +63,7 @@
     <None Include="ClaimsWebPart\SharePointProjectItem.spdata">
       <SharePointProjectItemId>{7633631e-6866-49ce-aa5f-9dd52c343ca9}</SharePointProjectItemId>
     </None>
-    <None Include="Features\Feature1\Feature1.feature">
+    <None Include="Features\ClaimsWebPart\ClaimsWebPart.feature">
       <FeatureId>{e4a6bd89-3174-4c8d-aa88-19aa7e5c0c87}</FeatureId>
     </None>
     <None Include="key.snk" />
@@ -77,8 +77,8 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="ClaimsWebPart\Elements.xml" />
-    <Content Include="Features\Feature1\Feature1.Template.xml">
-      <DependentUpon>Feature1.feature</DependentUpon>
+    <Content Include="Features\ClaimsWebPart\ClaimsWebPart.Template.xml">
+      <DependentUpon>ClaimsWebPart.feature</DependentUpon>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
