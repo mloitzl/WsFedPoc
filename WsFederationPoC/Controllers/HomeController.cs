@@ -21,10 +21,6 @@ namespace WsFederationPoC.Controllers
         // GET: Home
         public ActionResult Index()
         {
-
-            //var clientContext = TokenHelper.GetS2SClientContextWithClaimsIdentity(sharepointUrl,
-            //   Thread.CurrentPrincipal.Identity,
-            //   TokenHelper.IdentityClaimType.SMTP, TokenHelper.ClaimProviderType.SAML, false);
             try
             {
                 var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
@@ -86,15 +82,15 @@ namespace WsFederationPoC.Controllers
 
         public ActionResult Install()
         {
-           
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext);
             using (var clientContext = spContext.CreateAppOnlyClientContextForSPHost())
             {
                 var web = clientContext.Web;
                 
-                clientContext.Load(web, w => w.Title);
+                clientContext.Load(web, w => w.Title, w => w.Url);
                 clientContext.ExecuteQuery();
                 ViewBag.SharePointWeb = web.Title;
+                ViewBag.SharePointWebUrl = web.Url;
                 var remoteAppUrl = $"{Request.Url.Scheme}://{Request.Url.DnsSafeHost}:{Request.Url.Port}{Request.ApplicationPath}";
                 clientContext.Site.AddJsBlock("WsFederationPocScriptLink",
                     $"{RegistrationScript}({JsonConvert.SerializeObject(new {remoteAppUrl})});", 1000);
@@ -105,8 +101,10 @@ namespace WsFederationPoC.Controllers
 
         private const string RegistrationScript = @"
 			(function (siteInfo, jsFiles) {
+                var iFrameLoaded = false;
                 function init(){
                     console.log('iFrame loaded');
+
                     loadScript(siteInfo.remoteAppUrl + '/Scripts/jquery-3.1.1.min.js', function() {
     				    loadScript(siteInfo.remoteAppUrl + '/Scripts/app.js', function() {
                             siteInfo['SPHostUrl'] = _spPageContextInfo.siteAbsoluteUrl;
@@ -120,7 +118,10 @@ namespace WsFederationPoC.Controllers
 
 				var iFrame = document.createElement('iframe');
                 iFrame.onload = function() {
-                    init();
+                    if(iFrameLoaded) {
+                        init();
+                    }
+                    iFrameLoaded = true;
                 };
 
                 var body = document.getElementsByTagName('body')[0];

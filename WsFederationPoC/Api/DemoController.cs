@@ -21,7 +21,7 @@ namespace WsFederationPoC.Api
         [Route("{id}")]
         public async Task<IHttpActionResult> Item(int id)
         {
-            return Ok(await Task.FromResult(DataContext.GetItems().Where(i => i.Id == id)));
+            return Ok(await Task.FromResult(DataContext.GetItems().Where(i => i.Id == id).FirstOrDefault()));
         }
     }
 }

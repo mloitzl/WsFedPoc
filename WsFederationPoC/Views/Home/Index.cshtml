@@ -1,13 +1,14 @@
 ﻿@model dynamic
 
-<h1>Claims web</h1>
+<h1>Claims-aware Remote-Web</h1>
 <h2>Welcome: @ViewBag.DisplayName</h2>
+
 <p>SharePoint User: @ViewBag.SharePointUser</p>
 <p>SharePoint User Name Id: @ViewBag.SharePointUserNameId</p>
 <p>SharePoint User name Id Issuer: @ViewBag.SharePointUserNameIdIssuer</p>
 <p>SharePoint Web: @ViewBag.SharePointWeb</p>
 
-<h3>Values from Identity</h3>
+<h3>Values from Claims Identity:</h3>
 <table>
     <tr>
         <th>
@@ -27,7 +28,7 @@
     </tr>
 </table>
 <h3>Claims from ClaimsIdentity</h3>
-<table border="1">
+<table>
     <tr>
         <th>
             Claim Type
@@ -68,9 +69,9 @@
 </table>
 @if (ViewBag.ClaimsIdentity.IsAuthenticated)
 {
-    @Html.ActionLink("Logout", "LogOff");
+    @Html.ActionLink("Logout", "LogOff")
 }
 <br/>
-@Html.ActionLink("Setup", "Setup");
+@Html.ActionLink("Setup", "Setup")
 <br />
-@Html.ActionLink("Api Call", "Index", "ApiCall");
+@Html.ActionLink("Api Call", "Index", "ApiCall")
