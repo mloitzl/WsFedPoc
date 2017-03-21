@@ -1,77 +1,104 @@
 ﻿@model dynamic
 
-<h1>Claims-aware Remote-Web</h1>
-<h2>Welcome: @ViewBag.DisplayName</h2>
+<h1 class="ms-font-xl ms-fontColor-themePrimary">Claims-aware Remote-Web</h1>
+<h2 class="ms-font-l ms-fontColor-themePrimary">Welcome: @ViewBag.DisplayName</h2>
 
-<p>SharePoint User: @ViewBag.SharePointUser</p>
-<p>SharePoint User Name Id: @ViewBag.SharePointUserNameId</p>
-<p>SharePoint User name Id Issuer: @ViewBag.SharePointUserNameIdIssuer</p>
-<p>SharePoint Web: @ViewBag.SharePointWeb</p>
+<div class="ms-Grid-row">
+    <div class="ms-Grid-col ms-u-sm6 block">
+        <h3 class="ms-font-m ms-fontColor-themePrimary">SharePoint Identity:</h3>
+        <p class="ms-font-m ms-fontWeight-regular">SharePoint User: @ViewBag.SharePointUser</p>
+        <p class="ms-font-m ms-fontWeight-regular">SharePoint User Name Id: @ViewBag.SharePointUserNameId</p>
+        <p class="ms-font-m ms-fontWeight-regular">SharePoint User name Id Issuer: @ViewBag.SharePointUserNameIdIssuer</p>
+        <p class="ms-font-m ms-fontWeight-regular">SharePoint Web: @ViewBag.SharePointWeb</p>
 
-<h3>Values from Claims Identity:</h3>
-<table>
-    <tr>
-        <th>
-            IsAuthenticated
-        </th>
-        <td>
-            @ViewBag.ClaimsIdentity.IsAuthenticated
-        </td>
-    </tr>
-    <tr>
-        <th>
-            Name
-        </th>
-        <td>
-            @ViewBag.ClaimsIdentity.Name
-        </td>
-    </tr>
-</table>
-<h3>Claims from ClaimsIdentity</h3>
-<table>
-    <tr>
-        <th>
-            Claim Type
-        </th>
-        <th>
-            Claim Value
-        </th>
-        <th>
-            Value Type
-        </th>
-        <th>
-            Subject Name
-        </th>
-        <th>
-            Issuer Name
-        </th>
-    </tr>
-    @foreach (System.Security.Claims.Claim claim in ViewBag.ClaimsIdentity.Claims)
-    {
-        <tr>
-            <td>
-                @claim.Type
-            </td>
-            <td>
-                @claim.Value
-            </td>
-            <td>
-                @claim.ValueType
-            </td>
-            <td>
-                @claim.Subject.Name
-            </td>
-            <td>
-                @claim.Issuer
-            </td>
-        </tr>
-    }
-</table>
-@if (ViewBag.ClaimsIdentity.IsAuthenticated)
-{
-    @Html.ActionLink("Logout", "LogOff")
+    </div>
+    <div class="ms-Grid-col ms-u-sm6 block">
+        <h3 class="ms-font-m ms-fontColor-themePrimary">Claims Identity:</h3>
+        <div class="ms-font-m ms-fontWeight-regular ms-Table-row">
+            <div class="ms-Table-row">
+                <div class="ms-Table-cell ms-fontWeight-semibold">
+                    IsAuthenticated
+                </div>
+                <div class="ms-Table-cell">
+                    @ViewBag.ClaimsIdentity.IsAuthenticated
+                </div>
+            </div>
+            <div class="ms-Table-row">
+                <div class="ms-Table-cell  ms-fontWeight-semibold">
+                    Name
+                </div>
+                <div class="ms-Table-cell">
+                    @ViewBag.ClaimsIdentity.Name
+                </div>
+            </div>
+        </div>
+        <h3 class="ms-font-m ms-fontColor-themePrimary">Claims from ClaimsIdentity</h3>
+        <div class="ms-Table">
+            <div class="ms-Table-row">
+                <span class="ms-Table-cell ms-fontWeight-semibold">
+                    Claim Type
+                </span>
+                <span class="ms-Table-cell ms-fontWeight-semibold">
+                    Claim Value
+                </span>
+                <span class="ms-Table-cell ms-fontWeight-semibold">
+                    Value Type
+                </span>
+                <span class="ms-Table-cell ms-fontWeight-semibold">
+                    Subject Name
+                </span>
+                <span class="ms-Table-cell ms-fontWeight-semibold">
+                    Issuer Name
+                </span>
+            </div>
+
+            @foreach (System.Security.Claims.Claim claim in ViewBag.ClaimsIdentity.Claims)
+            {
+                <div class="ms-Table-row">
+                    <span class="ms-Table-cell">
+                        @claim.Type
+                    </span>
+                    <span class="ms-Table-cell">
+                        @claim.Value
+                    </span>
+                    <span class="ms-Table-cell">
+                        @claim.ValueType
+                    </span>
+                    <span class="ms-Table-cell">
+                        @claim.Subject.Name
+                    </span>
+                    <span class="ms-Table-cell">
+                        @claim.Issuer
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $.fn.TableRow = function () {
+
+                /** Go through each row */
+                return this.each(function () {
+
+                    var $tableRow = $(this);
+
+                    /** Detect clicks on selectable list items. */
+                    $tableRow.on('click', '.ms-Table-rowCheck', function (event) {
+                        $(this).parents('.ms-Table-row').toggleClass('is-selected');
+                    });
+
+                });
+
+            };
+            if ($.fn.TableRow) {
+                $('.ms-Table-row').TableRow();
+            }
+        });
+    </script>
 }
-<br/>
-@Html.ActionLink("Setup", "Setup")
-<br />
-@Html.ActionLink("Api Call", "Index", "ApiCall")

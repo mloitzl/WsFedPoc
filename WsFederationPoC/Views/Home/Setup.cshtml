@@ -1,16 +1,16 @@
-﻿<h2>Inject JavaScript to SharePoint HostWeb</h2>
+﻿<h2 class="ms-font-xl ms-fontColor-themePrimary">Inject JavaScript to SharePoint HostWeb</h2>
 <div>
     @using (Html.BeginForm(
-        "Install",
-        "Home",
-        new RouteValueDictionary(
-            Request
-                .QueryString
-                .AllKeys
-                .ToDictionary(
-                    key => key,
-                    key => (object) Request.QueryString[key]))))
+                    "Install",
+                    "Home",
+                    new RouteValueDictionary(
+                        Request
+                            .QueryString
+                            .AllKeys
+                            .ToDictionary(
+                                key => key,
+                                key => (object)Request.QueryString[key]))))
     {
-        <input type="submit" value="Install" class="ms-Button"/>
+        <input type="submit" value="Install" class="ms-Button" />
     }
 </div>

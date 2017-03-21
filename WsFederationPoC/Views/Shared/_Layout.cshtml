@@ -1,15 +1,41 @@
-﻿<!DOCTYPE html>
+﻿@using System.Threading
+<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=100" />
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=100"/>
     <script src="~/Scripts/jquery-3.1.1.js"></script>
+    <script src="~/Scripts/fabric.min.js"></script>
     <script src="~/Scripts/spcontext.js"></script>
     <script src="~/Scripts/app.js"></script>
+    <link href="~/Content/fabric.min.css" rel="stylesheet"/>
+    <link href="~/Content/fabric.components.min.css" rel="stylesheet"/>
 </head>
 <body>
+<div class="ms-CommandBar">
+    <span class="ms-font-m">
+        @Html.ActionLink("Home", "Index", "Home")
+    </span>
+    <span class="ms-font-m">
+        @Html.ActionLink("Setup", "Setup", "Home")
+    </span>
+    <span class="ms-font-m">
+        @Html.ActionLink("Api Call", "Index", "ApiCall")
+    </span>
+
+    @if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
+    {
+        <span class="ms-font-m">
+            @Html.ActionLink("Logout", "LogOff", "Home")
+        </span>
+    }
+</div>
+<div class="ms-Grid">
     @RenderBody()
-    @RenderSection("scripts", required: false)
+</div>
+
+@RenderSection("scripts", false)
+
 </body>
 </html>
