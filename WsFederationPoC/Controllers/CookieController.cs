@@ -21,6 +21,7 @@ namespace WsFederationPoC.Controllers
             return View();
         }
 
+        // https://long2know.com/2016/05/extracting-bearer-token-from-owin-cookie/
         public static AuthenticationTicket GetAuthenticationTicketFromCookie(HttpContextBase context)
         {
             var cookie = context.Request.Cookies.Get("WsFederationPoC");
