@@ -1,0 +1,19 @@
+﻿@model dynamic
+    
+<ul>
+    @foreach (var claim in ViewBag.Ticket.Identity.Claims)
+    {
+        <li>
+            @claim
+        </li>
+    }
+</ul>
+
+<ul>
+    @foreach (var prop in ViewBag.Ticket.Properties.Dictionary)
+    {
+        <li>
+            @prop
+        </li>
+    }
+</ul>

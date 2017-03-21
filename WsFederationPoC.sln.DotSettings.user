@@ -8,4 +8,7 @@
   &lt;Assembly Path="D:\github\WsFederationPoC\WsFederationPoC\Bin\OfficeDevPnP.Core.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\github\WsFederationPoC\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll" /&gt;&#xD;
   &lt;Assembly Path="D:\github\WsFederationPoC\packages\Microsoft.Owin.Security.WsFederation.3.0.1\lib\net45\Microsoft.Owin.Security.WsFederation.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\github\WsFederationPoC\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll" /&gt;&#xD;
+  &lt;Assembly Path="D:\github\WsFederationPoC\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Windows\Microsoft.NET\Framework\v4.0.30319\mscorlib.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

@@ -22,6 +22,7 @@
     <WorkflowPartId>{644ff7be-37be-447b-b502-e9d9c10d672e}</WorkflowPartId>
     <CspkgPartId>{2cdd4fa1-1fa9-472b-aeea-433fad99524f}</CspkgPartId>
     <SqlPackagePartId>{5bdc0ca7-0e0a-4184-9fa7-979ce34bb33e}</SqlPackagePartId>
+    <ActivePublishProfile>appcloud.internal</ActivePublishProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

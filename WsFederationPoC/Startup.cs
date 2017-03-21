@@ -36,7 +36,8 @@ namespace WsFederationPoC
             app.UseCookieAuthentication(
                 new CookieAuthenticationOptions
                 {
-                    AuthenticationType = CookieAuthenticationDefaults.AuthenticationType
+                    AuthenticationType = CookieAuthenticationDefaults.AuthenticationType,
+                    CookieName = "WsFederationPoC"
                 });
 
             //app.UseWsFederationAuthentication(

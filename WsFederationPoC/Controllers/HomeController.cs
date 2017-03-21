@@ -5,8 +5,10 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.DataHandler;
 using Microsoft.SharePoint.Client;
 using Newtonsoft.Json;
+using WsFederationPoC.Models;
 using ClaimTypes = System.IdentityModel.Claims.ClaimTypes;
 
 namespace WsFederationPoC.Controllers
@@ -49,8 +51,10 @@ namespace WsFederationPoC.Controllers
 
             var claimsIdentity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
             ViewBag.DisplayName = claimsIdentity.Claims.First(c => c.Type == ClaimTypes.GivenName).Value;
+
             return View();
         }
+
 
         [AllowAnonymous]
         public ActionResult Setup()

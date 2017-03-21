@@ -193,6 +193,7 @@
     <Content Include="Content\fabric.min.css" />
     <Content Include="Content\fabric.rtl.min.css" />
     <Content Include="Global.asax" />
+    <None Include="Properties\PublishProfiles\appcloud.internal.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\app.js" />
     <Content Include="Scripts\fabric.js" />
@@ -211,6 +212,8 @@
     <Compile Include="Api\DemoController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ApiCallController.cs" />
+    <Compile Include="Controllers\CookieController.cs" />
+    <Compile Include="Models\MachineKeyProtector.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\EnvironmentConfig.cs" />
     <Compile Include="Models\Item.cs" />
@@ -238,6 +241,7 @@
     <Content Include="Scripts\jquery-3.1.1.min.map" />
     <Content Include="Views\ApiCall\Index.cshtml" />
     <Content Include="Views\Home\Echo.cshtml" />
+    <Content Include="Views\Cookie\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
