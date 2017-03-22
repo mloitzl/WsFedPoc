@@ -105,6 +105,7 @@ namespace WsFederationPoC.Controllers
 
         private const string RegistrationScript = @"
 			(function (siteInfo, jsFiles) {
+                
                 var iFrameLoaded = false;
                 function init(){
                     console.log('iFrame loaded');

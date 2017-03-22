@@ -23,6 +23,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetOfficeVersion>16.0</TargetOfficeVersion>
+    <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -203,6 +204,7 @@
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <Content Include="Scripts\spcontext.js" />
+    <Content Include="Services\EventReceiver.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -213,6 +215,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\ApiCallController.cs" />
     <Compile Include="Controllers\CookieController.cs" />
+    <Compile Include="Models\ListItemViewModel.cs" />
+    <Compile Include="Models\ListViewModel.cs" />
     <Compile Include="Models\MachineKeyProtector.cs" />
     <Compile Include="Models\DataContext.cs" />
     <Compile Include="Models\EnvironmentConfig.cs" />
@@ -223,6 +227,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\EventReceiver.svc.cs">
+      <DependentUpon>EventReceiver.svc</DependentUpon>
+    </Compile>
     <Compile Include="SharePointContext.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="TokenHelper.cs" />
@@ -242,6 +249,7 @@
     <Content Include="Views\ApiCall\Index.cshtml" />
     <Content Include="Views\Home\Echo.cshtml" />
     <Content Include="Views\Cookie\Index.cshtml" />
+    <Content Include="Services\Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

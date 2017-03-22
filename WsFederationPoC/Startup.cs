@@ -107,32 +107,32 @@ namespace WsFederationPoC
             // Web API routes
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute("WorkspaceApi", "api/workspaces/{templateName}/{id}",
-                new
-                {
-                    controller = "Workspaces",
-                    id = RouteParameter.Optional
-                });
+            //config.Routes.MapHttpRoute("WorkspaceApi", "api/workspaces/{templateName}/{id}",
+            //    new
+            //    {
+            //        controller = "Workspaces",
+            //        id = RouteParameter.Optional
+            //    });
 
-            config.Routes.MapHttpRoute("CurrentUserApi", "api/currentuser/groups/{action}",
-                new
-                {
-                    controller = "Users"
-                });
+            //config.Routes.MapHttpRoute("CurrentUserApi", "api/currentuser/groups/{action}",
+            //    new
+            //    {
+            //        controller = "Users"
+            //    });
 
-            config.Routes.MapHttpRoute("UsersApi", "api/users/{logOnName}",
-                new
-                {
-                    controller = "Users",
-                    logOnName = RouteParameter.Optional,
-                    action = "Default"
-                });
+            //config.Routes.MapHttpRoute("UsersApi", "api/users/{logOnName}",
+            //    new
+            //    {
+            //        controller = "Users",
+            //        logOnName = RouteParameter.Optional,
+            //        action = "Default"
+            //    });
 
-            config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}",
-                new
-                {
-                    action = RouteParameter.Optional
-                });
+            //config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}",
+            //    new
+            //    {
+            //        action = RouteParameter.Optional
+            //    });
         }
     }
 }

@@ -1,15 +1,35 @@
 ﻿@model dynamic
 
-<h2 class="ms-font-l ms-fontColor-themePrimary">AJAX Api Calls from RemoteWeb</h2>
-
-<h3 class="ms-font-m ms-fontColor-themePrimary"><pre>/api/demo/all</pre></h3>
-<div id="all" class="ms-font-m ms-fontColor-themeDark"></div>
-<h3 class="ms-font-m ms-fontColor-themePrimary"><pre>/api/demo/{item}</pre></h3>
-<div id="item" class="ms-font-m ms-fontColor-themeDark"></div>
-
-
-<h3 class="ms-font-m ms-fontColor-themePrimary"><pre>/api/sharepoint/hostwebuser</pre></h3>
-<div id="hostwebuser" class="ms-font-m ms-fontColor-themeDark"></div>
+<div class="ms-Grid">
+    <div class="ms-Grid-row">
+        <div class="ms-Grid-col ms-u-sm12 block">
+            <h1 class="ms-font-xl ms-fontColor-themePrimary">AJAX Api Calls from RemoteWeb</h1>
+        </div>
+        <div class="ms-Grid-col ms-u-sm4 block">
+            <h2 class="ms-font-l ms-fontColor-black">Unauthenticated</h2>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>GET /api/demo/all</pre></h3>
+            <div id="all" class="ms-font-m ms-fontColor-themeDark"></div>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>GET /api/demo/{item}</pre></h3>
+            <div id="item" class="ms-font-m ms-fontColor-themeDark"></div>
+        </div>
+        <div class="ms-Grid-col ms-u-sm4 block">
+            <h2 class="ms-font-l ms-fontColor-black">User Context</h2>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>GET /api/sharepoint/hostwebuser</pre></h3>
+            <div id="hostwebuser" class="ms-font-m ms-fontColor-themeDark"></div>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>GET /api/sharepoint/user/lists</pre></h3>
+            <div id="userlists"></div>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>POST /api/sharepoint/user/create/listitem</pre></h3>
+            <div id="createItem" style="display: none"></div>
+        </div>
+        <div class="ms-Grid-col ms-u-sm4 block">
+            <h2 class="ms-font-l ms-fontColor-black">App-Only Context</h2>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>GET /api/sharepoint/app/lists</pre></h3>
+            <div id="applists"></div>
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>POST /api/sharepoint/create/list</pre></h3>
+            <div id="createList"></div>
+        </div>
+    </div>
+</div>
 
 @section scripts
 {
@@ -17,7 +37,7 @@
         $(function () {
             WsFederationPoc.Page.init({
                 remoteAppUrl: "@ViewBag.RemoteAppUrl",
-                SPHostUrl: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPHostUrl"),
+                SPHostUrl: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPHostUrl").split("%2F").join("/").split("%3A").join(":"),
                 SPLanguage: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPLanguage"),
                 SPClientTag: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPClientTag"),
                 SPProductNumber: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPProductNumber")
