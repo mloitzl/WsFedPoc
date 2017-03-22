@@ -1,5 +1,8 @@
 ﻿@model dynamic
     
+@{
+    ViewBag.Current = "Decode Cookie";
+}
 <ul>
     @foreach (var claim in ViewBag.Ticket.Identity.Claims)
     {

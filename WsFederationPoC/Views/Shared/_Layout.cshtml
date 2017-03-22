@@ -2,43 +2,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=100"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=100" />
     <script src="~/Scripts/jquery-3.1.1.js"></script>
     <script src="~/Scripts/fabric.min.js"></script>
     <script src="~/Scripts/spcontext.js"></script>
     <script src="~/Scripts/app.js"></script>
-    <link href="~/Content/fabric.min.css" rel="stylesheet"/>
-    <link href="~/Content/fabric.components.min.css" rel="stylesheet"/>
+    <link href="~/Content/fabric.min.css" rel="stylesheet" />
+    <link href="~/Content/fabric.components.min.css" rel="stylesheet" />
 </head>
 <body>
-<div class="ms-CommandBar">
-    <span class="ms-font-m">
-        @Html.ActionLink("Home", "Index", "Home")
-    </span>
-    <span class="ms-font-m">
-        @Html.ActionLink("Setup", "Setup", "Home")
-    </span>
-    <span class="ms-font-m">
-        @Html.ActionLink("Api Call", "Index", "ApiCall")
-    </span>
+    <div class="ms-Pivot ms-Pivot--large">
+        <ul class="ms-Pivot-links">
+            <li class="ms-Pivot-link @( ViewBag.Current == "Home"? "is-selected" : "")" data-content="files" title="Home" tabindex="1">
+                @Html.ActionLink("Home", "Index", "Home", new { }, new { @class = "ms-Link" })
+            </li>
+            <li class="ms-Pivot-link @( ViewBag.Current == "Setup"? "is-selected" : "")" data-content="recent" title="Setup" tabindex="1">
+                @Html.ActionLink("Setup", "Setup", "Home", new { }, new { @class = "ms-Link" })
+            </li>
+            <li class="ms-Pivot-link @( ViewBag.Current == "Api Call"? "is-selected" : "")" data-content="shared" title="Api Call" tabindex="1">
+                @Html.ActionLink("Api Call", "Index", "ApiCall", new { }, new { @class = "ms-Link" })
+            </li>
+            @if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            {
+                <li class="ms-Pivot-link" tabindex="1">
+                    @Html.ActionLink("Logout", "LogOff", "Home", new { }, new { @class = "ms-Link" })
+                </li>
+                <li class="ms-Pivot-link @( ViewBag.Current == "Decode Cookie"? "is-selected" : "")" tabindex="1">
+                    @Html.ActionLink("Decode Auth Cookie", "Index", "Cookie", new { }, new { @class = "ms-Link" })
+                </li>
+            }
+        </ul>
+    </div>
+    @*<div class="ms-CommandBar">
+            <span class="ms-font-m">
+                @Html.ActionLink("Home", "Index", "Home")
+            </span>
+            <span class="ms-font-m">
+                @Html.ActionLink("Setup", "Setup", "Home")
+            </span>
+            <span class="ms-font-m">
+                @Html.ActionLink("Api Call", "Index", "ApiCall")
+            </span>
 
-    @if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
-    {
-        <span class="ms-font-m">
-            @Html.ActionLink("Logout", "LogOff", "Home")
-        </span>
-        <span class="ms-font-m">
-            @Html.ActionLink("Decode Auth Cookie", "Index", "Cookie")
-        </span>
-    }
-</div>
+            @if (Thread.CurrentPrincipal.Identity.IsAuthenticated)
+            {
+                <span class="ms-font-m">
+                    @Html.ActionLink("Logout", "LogOff", "Home")
+                </span>
+                <span class="ms-font-m">
+                    @Html.ActionLink("Decode Auth Cookie", "Index", "Cookie")
+                </span>
+            }
+        </div>*@
 
     @RenderBody()
 
 
-@RenderSection("scripts", false)
+    @RenderSection("scripts", false)
 
 </body>
 </html>
