@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
@@ -13,7 +12,7 @@ namespace WsFederationPoC.Api
     public class SharePointController : ApiController
     {
         [HttpGet]
-        [Route("hostwebuser")]
+        [Route("user/hostwebuser")]
         public async Task<IHttpActionResult> GetUser()
         {
             var cookies = HttpContext.Current.Request.Cookies;
@@ -40,19 +39,18 @@ namespace WsFederationPoC.Api
             }
         }
 
-        private static List<ListViewModel> LoadLists(ClientContext clientContext, bool hideHidden = false)
+        private static List<ListViewModel> LoadLists(ClientContext clientContext, bool omitHidden = false)
         {
             var lists = clientContext.Web.Lists;
             clientContext.Load(lists,
                 ls =>
-                    ls.Include(l => l.Title, l => l.RootFolder.ServerRelativeUrl, l => l.Id, l => l.Created, l => l.ItemCount,
+                    ls.Include(l => l.Title, l => l.RootFolder.ServerRelativeUrl, l => l.Id, l => l.Created,
+                        l => l.ItemCount,
                         l => l.EventReceivers, l => l.Hidden));
             clientContext.ExecuteQuery();
             var result = new List<ListViewModel>();
-            foreach (List list in lists)
-            {
-                if (!(hideHidden && list.Hidden))
-                {
+            foreach (var list in lists)
+                if (!(omitHidden && list.Hidden))
                     result.Add(new ListViewModel
                     {
                         Id = list.Id,
@@ -62,8 +60,6 @@ namespace WsFederationPoC.Api
                         ItemCount = list.ItemCount,
                         EventReceiversCount = list.EventReceivers.Count
                     });
-                }
-            }
             return result;
         }
 
@@ -98,7 +94,7 @@ namespace WsFederationPoC.Api
         }
 
         [HttpPost]
-        [Route("create/list")]
+        [Route("app/create/list")]
         public async Task<IHttpActionResult> CreateList([FromBody] ListViewModel value)
         {
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
@@ -118,7 +114,7 @@ namespace WsFederationPoC.Api
         }
 
         [HttpPost]
-        [Route("delete/list")]
+        [Route("app/delete/list")]
         public async Task<IHttpActionResult> DeleteList([FromBody] ListViewModel value)
         {
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
@@ -131,14 +127,16 @@ namespace WsFederationPoC.Api
                 return Ok(await Task.FromResult($"deleted {value.Id}"));
             }
         }
+
         [HttpPost]
-        [Route("attach/listeventreceiver")]
+        [Route("app/attach/listeventreceiver")]
         public async Task<IHttpActionResult> AttachListEventReceiver([FromBody] ListViewModel value)
         {
             var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
             using (var clientContext = spContext.CreateAppOnlyClientContextForSPHost())
             {
-                var remoteAppUrl = $"{HttpContext.Current.Request.Url.Scheme}://{HttpContext.Current.Request.Url.DnsSafeHost}:{HttpContext.Current.Request.Url.Port}{HttpContext.Current.Request.ApplicationPath}";
+                var remoteAppUrl =
+                    $"{HttpContext.Current.Request.Url.Scheme}://{HttpContext.Current.Request.Url.DnsSafeHost}:{HttpContext.Current.Request.Url.Port}{HttpContext.Current.Request.ApplicationPath}";
                 var list = clientContext.Web.Lists.GetById(value.Id);
                 list.EventReceivers.Add(new EventReceiverDefinitionCreationInformation
                 {
@@ -156,8 +154,5 @@ namespace WsFederationPoC.Api
                 return Ok(await Task.FromResult($"deleted {value.Id}"));
             }
         }
-
-
     }
 }
-

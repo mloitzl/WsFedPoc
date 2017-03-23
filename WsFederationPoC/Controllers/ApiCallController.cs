@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace WsFederationPoC.Controllers
 {
@@ -12,7 +8,8 @@ namespace WsFederationPoC.Controllers
         // GET: ApiCall
         public ActionResult Index()
         {
-            ViewBag.RemoteAppUrl  = $"{Request.Url.Scheme}://{Request.Url.DnsSafeHost}:{Request.Url.Port}{Request.ApplicationPath}";
+            ViewBag.RemoteAppUrl =
+                $"{Request.Url.Scheme}://{Request.Url.DnsSafeHost}:{Request.Url.Port}{Request.ApplicationPath}";
             return View();
         }
     }

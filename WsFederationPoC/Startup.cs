@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Cors;
 using System.Web.Http;
@@ -11,7 +9,6 @@ using Microsoft.Owin.Cors;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.WsFederation;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Owin;
 using WsFederationPoC;
@@ -67,7 +64,7 @@ namespace WsFederationPoC
 
         private static void ConfigureCors(IAppBuilder app)
         {
-            var corsPolicy = new CorsPolicy()
+            var corsPolicy = new CorsPolicy
             {
                 AllowAnyHeader = true,
                 SupportsCredentials = true,
@@ -93,7 +90,7 @@ namespace WsFederationPoC
             app.UseCors(corsOptions);
         }
 
-        public void ConfigureWebApi(IAppBuilder app)
+        private void ConfigureWebApi(IAppBuilder app)
         {
             GlobalConfiguration.Configure(RegisterWebApiConfiguration);
         }
@@ -106,34 +103,6 @@ namespace WsFederationPoC
 
             // Web API routes
             config.MapHttpAttributeRoutes();
-
-            //config.Routes.MapHttpRoute("WorkspaceApi", "api/workspaces/{templateName}/{id}",
-            //    new
-            //    {
-            //        controller = "Workspaces",
-            //        id = RouteParameter.Optional
-            //    });
-
-            //config.Routes.MapHttpRoute("CurrentUserApi", "api/currentuser/groups/{action}",
-            //    new
-            //    {
-            //        controller = "Users"
-            //    });
-
-            //config.Routes.MapHttpRoute("UsersApi", "api/users/{logOnName}",
-            //    new
-            //    {
-            //        controller = "Users",
-            //        logOnName = RouteParameter.Optional,
-            //        action = "Default"
-            //    });
-
-            //config.Routes.MapHttpRoute("DefaultApi", "api/{controller}/{action}",
-            //    new
-            //    {
-            //        action = RouteParameter.Optional
-            //    });
         }
     }
 }
-

@@ -18,10 +18,6 @@ namespace WsFederationPoC.Models
 
         private readonly string[] _purpose;
 
-        public MachineKeyProtector()
-        {
-        }
-
         public MachineKeyProtector(string purpose)
         {
             if (purpose == "cookie")

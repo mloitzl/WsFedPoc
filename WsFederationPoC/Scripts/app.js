@@ -34,7 +34,7 @@
                         .fail(function(e) {
                             console.error(e);
                         });
-                    Page.remoteWebAjax("/api/sharepoint/hostwebuser", "GET", null, {})
+                    Page.remoteWebAjax("/api/sharepoint/user/hostwebuser", "GET", null, {})
                         .then(function(r) {
                             Page.renderResult(r, "#hostwebuser");
                         })
@@ -238,7 +238,7 @@
                                 function(e) {
                                     e.preventDefault();
                                     console.log("Creating: " + textInput.val());
-                                    Page.remoteWebAjax("/api/sharepoint/create/list",
+                                    Page.remoteWebAjax("/api/sharepoint/app/create/list",
                                         "POST",
                                         {
                                             title: textInput.val()
@@ -290,18 +290,20 @@
         };
 
         Page.deleteList = function(id, element) {
-            Page.remoteWebAjax("/api/sharepoint/delete/list",
-                "POST",
-                {
-                    id: id
-                },
-                {}).then(function(r) {
-                Page.loadAppLists(null, element);
-            });
+            Page.remoteWebAjax("/api/sharepoint/app/delete/list",
+                    "POST",
+                    {
+                        id: id
+                    },
+                    {})
+                .then(function(r) {
+                    Page.loadAppLists(null, element);
+                    Page.loadUserLists(null, "#userlists");
+                });
         };
 
         Page.attachListEventReceiver = function(id, element) {
-            Page.remoteWebAjax("/api/sharepoint/attach/listeventreceiver",
+            Page.remoteWebAjax("/api/sharepoint/app/attach/listeventreceiver",
                 "POST",
                 {
                     id: id
