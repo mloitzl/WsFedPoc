@@ -32,20 +32,21 @@
                             Page.renderResult(r, "#all");
                         })
                         .fail(function(e) {
-                            console.error(e);
+                            console.error(JSON.parse(e.responseText).exceptionMessage);
                         });
                     Page.remoteWebAjax("/api/sharepoint/user/hostwebuser", "GET", null, {})
                         .then(function(r) {
                             Page.renderResult(r, "#hostwebuser");
                         })
                         .fail(function(e) {
-                            console.error(e);
+                            console.error(JSON.parse(e.responseText).exceptionMessage);
                         });
 
                     Page.loadAppLists(null, "#applists");
                     Page.loadUserLists(null, "#userlists");
                     Page.createList("#createList");
                     Page.createItem("#createItem");
+                    Page.createLoad("#createLoad");
                 });
             });
         };
@@ -102,7 +103,7 @@
                     Page.renderAppLists(r, id, highlight);
                 })
                 .fail(function(e) {
-                    console.error(e);
+                    console.error(JSON.parse(e.responseText).exceptionMessage);
                 });
 
         };
@@ -113,7 +114,7 @@
                     Page.renderUserLists(r, id, highlight, listId);
                 })
                 .fail(function(e) {
-                    console.error(e);
+                    console.error(JSON.parse(e.responseText).exceptionMessage);
                 });
 
         };
@@ -246,6 +247,9 @@
                                         {}).then(function(r) {
                                         Page.loadAppLists(textInput.val(), "#applists");
                                         Page.loadUserLists(textInput.val(), "#userlists");
+                                    }).fail(function(e) {
+
+                                        console.error(JSON.parse(e.responseText).exceptionMessage);
                                     });
                                 }));
                     }
@@ -253,6 +257,29 @@
             );
         };
 
+        Page.createLoad = function(id) {
+            $(
+                function() {
+                    var buttonTitle;
+                    $(id).append($("<button>").addClass("ms-Button")
+                        .append(buttonTitle = $("<span>").text("Create Load"))
+                        .bind("click",
+                            function(e) {
+                                e.preventDefault();
+
+                                buttonTitle.text("Running...").parent().prop("disabled", true);
+
+                                Page.remoteWebAjax("/api/sharepoint/app/load",
+                                    "GET",
+                                    null,
+                                    {}).then(function(r) {
+                                    console.log(r);
+                                    buttonTitle.text("Create Load").parent().prop("disabled", false);
+                                });
+                            }));
+
+                });
+        };
         Page.createItem = function(id) {
             $(
                 function() {

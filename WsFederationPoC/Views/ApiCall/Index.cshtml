@@ -24,10 +24,26 @@
             <div id="createItem" style="display: none"></div>
         </div>
         <div class="ms-Grid-col ms-u-sm4 block">
+            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>POST /api/sharepoint/app/load</pre></h3>
+            <div id="createLoad"></div>
+            <div id="viewerCount">--</div>
+            <div class="ms-TextField ms-TextField--underlined">
+                <label class="ms-Label">Successes</label>
+                <input id="successes" class="ms-TextField-field" type="text" value="" placeholder="">
+            </div>
+            <div class="ms-TextField ms-TextField--underlined">
+                <label class="ms-Label">Failures</label>
+                <input id="failures" class="ms-TextField-field" type="text" value="" placeholder="">
+            </div>
+            <div class="ms-u-clearfix"></div>
             <h2 class="ms-font-l ms-fontColor-black">App-Only Context</h2>
-            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>GET /api/sharepoint/app/lists</pre></h3>
+            <h3 class="ms-font-m ms-fontColor-themePrimary">
+                <pre>GET /api/sharepoint/app/lists</pre>
+            </h3>
             <div id="applists"></div>
-            <h3 class="ms-font-m ms-fontColor-themePrimary"><pre>POST /api/sharepoint/app/create/list</pre></h3>
+            <h3 class="ms-font-m ms-fontColor-themePrimary">
+                <pre>POST /api/sharepoint/app/create/list</pre>
+            </h3>
             <div id="createList"></div>
         </div>
     </div>
@@ -35,6 +51,8 @@
 
 @section scripts
 {
+    <script src="~/Scripts/jquery.signalR-2.2.1.min.js"></script>
+    <script src="/signalr/hubs"></script>
     <script type="text/javascript">
         $(function () {
             WsFederationPoc.Page.init({
@@ -44,6 +62,18 @@
                 SPClientTag: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPClientTag"),
                 SPProductNumber: WsFederationPoc.Page.getQueryParameter(window.location.search, "SPProductNumber")
             });
+
+            var hubProxy = $.connection.SharePointPerformance;
+            hubProxy.client.viewerCountChanged = function (count) {
+                $("#viewerCount").text(count);
+            };
+
+            hubProxy.client.successRatio = function (success, failure) {
+                $("#successes").val(success);
+                $("#failures").val(failure);
+            };
+
+            $.connection.hub.start();
         });
     </script>
 }

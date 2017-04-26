@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 using System.Web.Cors;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -23,6 +24,7 @@ namespace WsFederationPoC
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            app.MapSignalR();
             ConfigureCors(app);
             ConfigureWebApi(app);
             ConfigureMvc(app);
@@ -49,7 +51,8 @@ namespace WsFederationPoC
                 new WsFederationAuthenticationOptions
                 {
                     MetadataAddress = "https://sts.acme.lab/federationmetadata/2007-06/federationmetadata.xml",
-                    Wtrealm = "urn:wsfederationpoc"
+                    Wtrealm = "urn:wsfederationpoc",
+                    Wreply = WebConfigurationManager.AppSettings.Get("RedirectUri")
                 });
 
 

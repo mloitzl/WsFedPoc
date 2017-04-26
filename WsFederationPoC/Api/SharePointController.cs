@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Microsoft.AspNet.SignalR;
 using Microsoft.SharePoint.Client;
+using WsFederationPoC.Hubs;
 using WsFederationPoC.Models;
 
 namespace WsFederationPoC.Api
@@ -154,5 +159,74 @@ namespace WsFederationPoC.Api
                 return Ok(await Task.FromResult($"deleted {value.Id}"));
             }
         }
+
+        public Task<SharePointResult> CreateListItem(string title, string listName, SharePointContext context)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                using (var clientContext = context.CreateAppOnlyClientContextForSPHost())
+                {
+                    var list = clientContext.Web.Lists.GetByTitle(listName);
+                    var item = list.AddItem(new ListItemCreationInformation());
+                    item["Title"] = title;
+                    item.Update();
+                    try
+                    {
+                        clientContext.ExecuteQuery();
+                    }
+                    catch (Exception ex)
+                    {
+                        //if (ex.Message.Contains("429"))
+                        SharePointPerformanceHub.Instance.SuccessCountChanged(false);
+
+                        return new SharePointResult(false)
+                        {
+                            Message = ex.Message,
+                            Exception = ex
+                        };
+                    }
+                }
+
+                SharePointPerformanceHub.Instance.SuccessCountChanged(true);
+                return new SharePointResult(true);
+            }, TaskCreationOptions.LongRunning);
+        }
+
+        [HttpGet]
+        [Route("app/load")]
+        public async Task<IHttpActionResult> CreateLoad()
+        {
+            int workerThreads;
+            int completionPortThreads;
+            ThreadPool.GetMaxThreads(out workerThreads, out completionPortThreads);
+
+            Console.WriteLine($"workerThreads : {workerThreads} - completionPortThreads {completionPortThreads}");
+            SharePointPerformanceHub.Instance.Reset();
+
+            var sharePointContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
+
+            var tasks = new List<Task<SharePointResult>>();
+
+            // for (var i = 0; i < 10000; i++)
+            Parallel.ForEach(Enumerable.Range(0, 100), j => Parallel.ForEach(Enumerable.Range(0, 100), (i) => tasks.Add(CreateListItem($"Item {j} - {i}", "LoadTest", sharePointContext))));
+
+            //tasks.Add(CreateListItem($"Item {i}", "LoadTest",
+            //        SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current)));
+
+            return Ok(await Task.WhenAll(tasks));
+        }
+    }
+
+    public class SharePointResult
+    {
+        private bool _success;
+
+        public SharePointResult(bool success)
+        {
+            _success = success;
+        }
+
+        public string Message { get; set; }
+        public Exception Exception { get; set; }
     }
 }
