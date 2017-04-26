@@ -5,7 +5,7 @@
 
 #### Powershell for People Picker Settings with LDACPCP
 
-![PowerShell](./LDAPCP-ClaimTypeMappings.ps1)
+[PowerShell Script](./PowerShell/LDAPCP-ClaimTypeMappings.ps1)
 
 #### Using ADFS Groups (Role) with LDAPCP
 
