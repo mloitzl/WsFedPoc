@@ -120,6 +120,7 @@
       <HintPath>..\packages\SharePointPnP.IdentityModel.Extensions.1.2.2\lib\net45\SharePointPnP.IdentityModel.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.IdentityModel.Selectors" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -220,6 +221,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClaimsEncoding.cs" />
+    <Compile Include="Models\ClaimsUserViewModel.cs" />
+    <Compile Include="Models\RoleViewModel.cs" />
+    <Compile Include="Models\GroupMembersViewModel.cs" />
     <Compile Include="Api\SharePointController.cs" />
     <Compile Include="Api\DemoController.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

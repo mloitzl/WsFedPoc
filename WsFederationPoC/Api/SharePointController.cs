@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using Microsoft.AspNet.SignalR;
+using System.Web.Http.Description;
 using Microsoft.SharePoint.Client;
+using Microsoft.SharePoint.Client.Utilities;
 using WsFederationPoC.Hubs;
 using WsFederationPoC.Models;
 
@@ -160,6 +161,8 @@ namespace WsFederationPoC.Api
             }
         }
 
+        [HttpPost]
+        [Route("app/attach/listeventreceiver")]
         public Task<SharePointResult> CreateListItem(string title, string listName, SharePointContext context)
         {
             return Task.Factory.StartNew(() =>
@@ -193,6 +196,72 @@ namespace WsFederationPoC.Api
         }
 
         [HttpGet]
+        [ResponseType(typeof(bool))]
+        [Route("app/isinrole/{role=}")]
+        public async Task<IHttpActionResult> IsMember([FromUri] RoleViewModel model)
+        {
+            var claimsId = HttpContext.Current.User.Identity as ClaimsIdentity;
+            if (claimsId == null)
+            {
+                return NotFound();
+            }
+
+            var roleClaimsOfCurrentUser = TokenHelper.GetRoleClaims(claimsId);
+
+            var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
+            using (var clientContext = spContext.CreateAppOnlyClientContextForSPHost())
+            {
+                if (!clientContext.Web.GroupExists(model.Role)) return Ok(await Task.FromResult(false));
+
+                var group = clientContext.Web.SiteGroups.GetByName(model.Role);
+                clientContext.Load(@group, g => g.Users);
+                clientContext.ExecuteQuery();
+
+                foreach (var groupUser in @group.Users)
+                {
+                    if (groupUser.PrincipalType != PrincipalType.SecurityGroup) continue;
+
+                    if (
+                        roleClaimsOfCurrentUser.Any(
+                            rc =>
+                                rc.Item2.ToLowerInvariant() ==
+                                ClaimsEncoding.Parse(groupUser.LoginName).ClaimValue.ToLowerInvariant()))
+                    {
+                        return Ok(await Task.FromResult(true));
+                    }
+                }
+            }
+
+            return Ok(await Task.FromResult(false));
+        }
+
+        [HttpGet]
+        [ResponseType(typeof(IEnumerable<GroupMembersViewModel>))]
+        [Route("app/rolemembers/{role=}")]
+        public async Task<IHttpActionResult> GetRoleMember([FromUri] RoleViewModel model)
+        {
+            var result = new List<GroupMembersViewModel>();
+            var spContext = SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current);
+            using (var clientContext = spContext.CreateAppOnlyClientContextForSPHost())
+            {
+                if (!clientContext.Web.GroupExists(model.Role)) return Ok(await Task.FromResult(result));
+
+                var group = clientContext.Web.SiteGroups.GetByName(model.Role);
+                clientContext.Load(@group, g => g.Users);
+                clientContext.ExecuteQuery();
+
+                result.Add(new GroupMembersViewModel
+                {
+                    RoleName = model,
+                    Members = @group.Users.Select(m => ClaimsEncoding.Parse(m.LoginName)).ToList()
+                });
+            }
+
+            return Ok(await Task.FromResult(result));
+        }
+
+
+        [HttpGet]
         [Route("app/load")]
         public async Task<IHttpActionResult> CreateLoad()
         {
@@ -208,7 +277,10 @@ namespace WsFederationPoC.Api
             var tasks = new List<Task<SharePointResult>>();
 
             // for (var i = 0; i < 10000; i++)
-            Parallel.ForEach(Enumerable.Range(0, 100), j => Parallel.ForEach(Enumerable.Range(0, 100), (i) => tasks.Add(CreateListItem($"Item {j} - {i}", "LoadTest", sharePointContext))));
+            Parallel.ForEach(Enumerable.Range(0, 100),
+                j =>
+                    Parallel.ForEach(Enumerable.Range(0, 100),
+                        i => tasks.Add(CreateListItem($"Item {j} - {i}", "LoadTest", sharePointContext))));
 
             //tasks.Add(CreateListItem($"Item {i}", "LoadTest",
             //        SharePointContextProvider.Current.GetSharePointContext(HttpContext.Current)));
@@ -216,6 +288,7 @@ namespace WsFederationPoC.Api
             return Ok(await Task.WhenAll(tasks));
         }
     }
+
 
     public class SharePointResult
     {
@@ -230,3 +303,6 @@ namespace WsFederationPoC.Api
         public Exception Exception { get; set; }
     }
 }
+
+
+                                                                          

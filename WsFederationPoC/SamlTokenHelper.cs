@@ -31,6 +31,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Configuration;
@@ -92,6 +93,7 @@ namespace WsFederationPoC
         private const string CLAIM_TYPE_UPN = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn";
         private const string CLAIM_TYPE_SIP = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sip";
         private const string CLAIM_TYPE_SID = "http://schemas.microsoft.com/ws/2008/06/identity/claims/primarysid";
+        private const string CLAIM_TYPE_ROLE = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
 
         private const string CLAIMS_ID_TYPE_EMAIL = "smtp";
         private const string CLAIMS_ID_TYPE_UPN = "upn";
@@ -179,8 +181,14 @@ namespace WsFederationPoC
             var realm = string.IsNullOrEmpty(Realm) ? GetRealmFromTargetUrl(targetApplicationUri) : Realm;
 
             var claims = identity != null
-                ? GetClaimsWithClaimsIdentity(identity, UserIdentityClaimType, id, IdentityClaimProviderType)
+                ? GetClaimsWithClaimsIdentity(identity, UserIdentityClaimType, id, IdentityClaimProviderType).ToList()
                 : null;
+
+            if (claims != null)
+            {
+                var roleClaim = GetJwtRoleClaims(identity);
+                claims.Add(roleClaim);
+            }
 
             return IssueToken(
                 ClientId,
@@ -195,6 +203,40 @@ namespace WsFederationPoC
                 id.ClaimsIdClaimType != CLAIMS_ID_TYPE_UPN,
                 id.ClaimsIdClaimType,
                 id.ClaimsIdClaimValue);
+        }
+
+        private static JsonWebTokenClaim GetJwtRoleClaims(ClaimsIdentity identity)
+        {
+            var roles = new List<string>();
+
+            if (identity.IsAuthenticated)
+            {
+                foreach (Claim claim in identity.Claims)
+                {
+                    if (claim.Type.Equals(CLAIM_TYPE_ROLE))
+                    {
+                        roles.Add(claim.Value);
+                    }
+                }
+            }
+            return new JsonWebTokenClaim("groups", String.Join(", ", roles));
+        }
+
+        public static List<Tuple<string, string>> GetRoleClaims(ClaimsIdentity identity)
+        {
+            var roles = new List<Tuple<string, string>>();
+
+            if (identity.IsAuthenticated)
+            {
+                foreach (Claim claim in identity.Claims)
+                {
+                    if (claim.Type.Equals(CLAIM_TYPE_ROLE))
+                    {
+                        roles.Add(Tuple.Create(claim.Type, claim.Value));
+                    }
+                }
+            }
+            return roles;
         }
 
         private static string IssueToken(
@@ -359,7 +401,7 @@ namespace WsFederationPoC
             //set up the nii claim and then add the smtp or sip claim separately
             if (IdentityClaimProviderType == ClaimProviderType.SAML)
                 claimSet["nii"] = "trusted:" + TrustedProviderName.ToLower();
-                    //was urn:office:idp:trusted:, but this does not seem to align with what SPIdentityClaimMapper uses
+            //was urn:office:idp:trusted:, but this does not seem to align with what SPIdentityClaimMapper uses
             else
                 claimSet["nii"] = "urn:office:idp:forms:" + MembershipProviderName.ToLower();
 
@@ -377,7 +419,7 @@ namespace WsFederationPoC
             var claimList = new List<JsonWebTokenClaim>();
 
             foreach (string key in claimSet.Keys)
-                claimList.Add(new JsonWebTokenClaim(key, (string) claimSet[key]));
+                claimList.Add(new JsonWebTokenClaim(key, (string)claimSet[key]));
 
             return claimList.ToArray();
         }

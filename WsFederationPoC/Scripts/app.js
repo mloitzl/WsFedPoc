@@ -1,23 +1,23 @@
 ﻿var WsFederationPoc;
-(function(WsFederationPoc) {
-    var Page = (function() {
+(function (WsFederationPoc) {
+    var Page = (function () {
         function Page() {
 
         }
 
-        Page.init = function(siteInfo) {
+        Page.init = function (siteInfo) {
             this._siteInfo = siteInfo;
             console.log(this._siteInfo);
 
-            $(function() {
+            $(function () {
                 var head = $("head");
-                ["Content/fabric.min.css", "Content/fabric.components.min.css"].forEach(function(relUrl) {
+                ["Content/fabric.min.css", "Content/fabric.components.min.css"].forEach(function (relUrl) {
                     head.append($("<link rel='stylesheet' type='text/css'>")
                         .attr("href", siteInfo.remoteAppUrl + "/" + relUrl));
                 });
 
                 var promises = [];
-                ["Scripts/fabric.js"].forEach(function(scriptUrl) {
+                ["Scripts/fabric.js"].forEach(function (scriptUrl) {
                     promises.push($.ajax({
                         cache: true,
                         url: siteInfo.remoteAppUrl + scriptUrl,
@@ -26,19 +26,19 @@
                     }));
                 });
 
-                $.when.apply(null, promises).then(function() {
+                $.when.apply(null, promises).then(function () {
                     Page.remoteWebAjax("/api/demo/all", "GET", null, {})
-                        .then(function(r) {
+                        .then(function (r) {
                             Page.renderResult(r, "#all");
                         })
-                        .fail(function(e) {
+                        .fail(function (e) {
                             console.error(JSON.parse(e.responseText).exceptionMessage);
                         });
                     Page.remoteWebAjax("/api/sharepoint/user/hostwebuser", "GET", null, {})
-                        .then(function(r) {
+                        .then(function (r) {
                             Page.renderResult(r, "#hostwebuser");
                         })
-                        .fail(function(e) {
+                        .fail(function (e) {
                             console.error(JSON.parse(e.responseText).exceptionMessage);
                         });
 
@@ -47,10 +47,11 @@
                     Page.createList("#createList");
                     Page.createItem("#createItem");
                     Page.createLoad("#createLoad");
+                    Page.isInRole("#isinrole");
                 });
             });
         };
-        Page.remoteWebAjax = function(url, method, data, contentType) {
+        Page.remoteWebAjax = function (url, method, data, contentType) {
             return $.ajax({
                 crossDomain: true,
                 url: Page.removeTrailingSlash(this._siteInfo.remoteAppUrl) + url,
@@ -71,22 +72,22 @@
             });
         };
 
-        Page.renderResult = function(result, id) {
-            $(function() {
+        Page.renderResult = function (result, id) {
+            $(function () {
                 console.log(result);
                 if ($.isArray(result)) {
                     result.forEach(
-                        function(item) {
+                        function (item) {
                             var div = $("<div>");
                             div.append($("<span>").text(item.id + ": "));
                             div.append($("<span>").text(item.name));
                             div.data("id", item.id);
                             $(id).append(div);
                             div.bind("click",
-                                function(e) {
+                                function (e) {
                                     var itemId = $(e.target).closest("div").data("id");
                                     Page.remoteWebAjax("/api/demo/" + itemId, "GET", null, {})
-                                        .then(function(r) {
+                                        .then(function (r) {
                                             Page.renderResult(r, "#item");
                                         });
                                 });
@@ -97,32 +98,47 @@
             });
         };
 
-        Page.loadAppLists = function(highlight, id) {
+        Page.isInRole = function (id) {
+            Page.remoteWebAjax("/api/sharepoint/app/isinrole/Claims Members", "GET", null, {})
+                .then(function (r) {
+                    if (r) {
+                        $(id).text("Current User is member of 'Claims Members'");
+                    } else 
+                    {
+                        $(id).text("Current User is not a  member of 'Claims Members'");
+                    }
+                })
+                .fail(function (e) {
+                    console.error(JSON.parse(e.responseText).exceptionMessage);
+                });
+        }
+
+        Page.loadAppLists = function (highlight, id) {
             Page.remoteWebAjax("/api/sharepoint/app/lists", "GET", null, {})
-                .then(function(r) {
+                .then(function (r) {
                     Page.renderAppLists(r, id, highlight);
                 })
-                .fail(function(e) {
+                .fail(function (e) {
                     console.error(JSON.parse(e.responseText).exceptionMessage);
                 });
 
         };
 
-        Page.loadUserLists = function(highlight, id, listId) {
+        Page.loadUserLists = function (highlight, id, listId) {
             Page.remoteWebAjax("/api/sharepoint/user/lists", "GET", null, {})
-                .then(function(r) {
+                .then(function (r) {
                     Page.renderUserLists(r, id, highlight, listId);
                 })
-                .fail(function(e) {
+                .fail(function (e) {
                     console.error(JSON.parse(e.responseText).exceptionMessage);
                 });
 
         };
 
-        Page.renderAppLists = function(result, id, highlight) {
+        Page.renderAppLists = function (result, id, highlight) {
             var si = this._siteInfo;
 
-            $(function() {
+            $(function () {
                 $(id).empty();
                 console.log(result);
                 if ($.isArray(result)) {
@@ -130,7 +146,7 @@
                     $(id).append(container = $("<div class='ms-List ms-List--grid'>"));
 
                     result.forEach(
-                        function(item) {
+                        function (item) {
                             var div = $("<div class='ms-ListItem'>")
                                 .addClass(item
                                     .title ===
@@ -150,7 +166,7 @@
 
                             div.append($("<div class='ms-ListItem-actions'>")
                                 .append($("<div class='ms-ListItem-action'>").data("listId", item.id).bind("click",
-                                        function(e) {
+                                        function (e) {
                                             var listId = $(e.target).closest("div").data("listId");
                                             console.log("Deleting: " + listId);
                                             Page.deleteList(listId, id);
@@ -158,7 +174,7 @@
                                     .append($("<i class='ms-Icon ms-Icon--Cancel'>"))
                                 )
                                 .append($("<div class='ms-ListItem-action'>").data("listId", item.id).bind("click",
-                                        function(e) {
+                                        function (e) {
                                             var listId = $(e.target).closest("div").data("listId");
                                             console.log("Attaching: " + listId);
                                             Page.attachListEventReceiver(listId, id);
@@ -172,10 +188,10 @@
             });
         };
 
-        Page.renderUserLists = function(result, id, highlight, selected) {
+        Page.renderUserLists = function (result, id, highlight, selected) {
             var si = this._siteInfo;
 
-            $(function() {
+            $(function () {
                 $(id).empty();
                 console.log(result);
                 if ($.isArray(result)) {
@@ -183,7 +199,7 @@
                     $(id).append(container = $("<ul class='ms-List'>"));
 
                     result.forEach(
-                        function(item) {
+                        function (item) {
                             var div = $("<li class='ms-ListItem is-read is-selectable'>").addClass(item
                                 .title ===
                                 highlight
@@ -200,7 +216,7 @@
                             div.append($("<span class='ms-ListItem-metaText'>")
                                 .text(new Date(item.created).toLocaleString()));
                             div.append($("<div class='ms-ListItem-selectionTarget'>").bind("click",
-                                    function(e) {
+                                    function (e) {
                                         var currentItem = $(e.target.closest("li"));
                                         if (currentItem.data("selected")) {
                                             currentItem.data("selected", false);
@@ -222,9 +238,9 @@
             });
         };
 
-        Page.createList = function(id) {
+        Page.createList = function (id) {
             $(
-                function() {
+                function () {
                     if (id) {
                         var textInput;
                         $(id).append(
@@ -236,7 +252,7 @@
 
                         $(id).append($("<button>").addClass("ms-Button").append($("<span>").text("Create List"))
                             .bind("click",
-                                function(e) {
+                                function (e) {
                                     e.preventDefault();
                                     console.log("Creating: " + textInput.val());
                                     Page.remoteWebAjax("/api/sharepoint/app/create/list",
@@ -244,27 +260,27 @@
                                         {
                                             title: textInput.val()
                                         },
-                                        {}).then(function(r) {
-                                        Page.loadAppLists(textInput.val(), "#applists");
-                                        Page.loadUserLists(textInput.val(), "#userlists");
-                                    }).fail(function(e) {
+                                        {}).then(function (r) {
+                                            Page.loadAppLists(textInput.val(), "#applists");
+                                            Page.loadUserLists(textInput.val(), "#userlists");
+                                        }).fail(function (e) {
 
-                                        console.error(JSON.parse(e.responseText).exceptionMessage);
-                                    });
+                                            console.error(JSON.parse(e.responseText).exceptionMessage);
+                                        });
                                 }));
                     }
                 }
             );
         };
 
-        Page.createLoad = function(id) {
+        Page.createLoad = function (id) {
             $(
-                function() {
+                function () {
                     var buttonTitle;
                     $(id).append($("<button>").addClass("ms-Button")
                         .append(buttonTitle = $("<span>").text("Create Load"))
                         .bind("click",
-                            function(e) {
+                            function (e) {
                                 e.preventDefault();
 
                                 buttonTitle.text("Running...").parent().prop("disabled", true);
@@ -272,17 +288,17 @@
                                 Page.remoteWebAjax("/api/sharepoint/app/load",
                                     "GET",
                                     null,
-                                    {}).then(function(r) {
-                                    console.log(r);
-                                    buttonTitle.text("Create Load").parent().prop("disabled", false);
-                                });
+                                    {}).then(function (r) {
+                                        console.log(r);
+                                        buttonTitle.text("Create Load").parent().prop("disabled", false);
+                                    });
                             }));
 
                 });
         };
-        Page.createItem = function(id) {
+        Page.createItem = function (id) {
             $(
-                function() {
+                function () {
                     if (id) {
                         var textInput;
                         $(id).append(
@@ -295,7 +311,7 @@
                         $(id).append($("<button>").addClass("ms-Button")
                             .append($("<span>").text("Create List Item"))
                             .bind("click",
-                                function(e) {
+                                function (e) {
                                     e.preventDefault();
                                     console.log("Creating item: " + textInput.val());
 
@@ -307,44 +323,44 @@
                                         {
                                             title: textInput.val()
                                         },
-                                        {}).then(function(r) {
-                                        Page.loadUserLists(textInput.val(), "#userlists", listId);
-                                    });
+                                        {}).then(function (r) {
+                                            Page.loadUserLists(textInput.val(), "#userlists", listId);
+                                        });
                                 }));
                     }
                 }
             );
         };
 
-        Page.deleteList = function(id, element) {
+        Page.deleteList = function (id, element) {
             Page.remoteWebAjax("/api/sharepoint/app/delete/list",
                     "POST",
                     {
                         id: id
                     },
                     {})
-                .then(function(r) {
+                .then(function (r) {
                     Page.loadAppLists(null, element);
                     Page.loadUserLists(null, "#userlists");
                 });
         };
 
-        Page.attachListEventReceiver = function(id, element) {
+        Page.attachListEventReceiver = function (id, element) {
             Page.remoteWebAjax("/api/sharepoint/app/attach/listeventreceiver",
                 "POST",
                 {
                     id: id
                 },
-                {}).then(function(r) {
-                Page.loadAppLists(null, element);
-            });
+                {}).then(function (r) {
+                    Page.loadAppLists(null, element);
+                });
         };
-        Page.removeTrailingSlash = function(url) {
+        Page.removeTrailingSlash = function (url) {
             if (!url) return url;
             return (url[url.length - 1] === "/") ? url.substring(0, url.length - 1) : url;
         };
 
-        Page.getQueryParameter = function(queryString, key) {
+        Page.getQueryParameter = function (queryString, key) {
             if (queryString) {
                 if (queryString[0] === "?") {
                     queryString = queryString.substring(1);
@@ -367,3 +383,7 @@
     }());;
     WsFederationPoc.Page = Page;
 })(WsFederationPoc || (WsFederationPoc = {}));;
+
+
+var subClass = new WsFederation.SubClass("p1");
+console.log(subClass.p1);
