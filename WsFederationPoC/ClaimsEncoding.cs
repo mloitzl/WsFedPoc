@@ -5,6 +5,7 @@ namespace WsFederationPoC
 {
     public static class ClaimsEncoding
     {
+        // Reference: https://social.technet.microsoft.com/wiki/contents/articles/13921.sharepoint-20102013-claims-encoding.aspx
         private const string ClaimsRegex =
             @"^(?<IdentityClaim>[ic]):0(?<ClaimType>[\#\.5\!\+\-\%\?\\e\""\$\&\'\(\)\*012346789\<\=\>\@\[\]\^_\`abcdfgǵ])(?<ClaimValueType>[\.\+\)\""\#\$\&\!0])(?<AuthMode>[wstmrfc])(\|(?<OriginalIssuer>.+))?(\|(?<ClaimValue>.*))$";
 

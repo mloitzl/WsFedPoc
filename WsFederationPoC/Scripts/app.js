@@ -48,6 +48,7 @@
                     Page.createItem("#createItem");
                     Page.createLoad("#createLoad");
                     Page.isInRole("#isinrole");
+                    Page.roleMember("#rolemembers");
                 });
             });
         };
@@ -112,6 +113,21 @@
                     console.error(JSON.parse(e.responseText).exceptionMessage);
                 });
         }
+
+        Page.roleMember = function (id) {
+            Page.remoteWebAjax("/api/sharepoint/app/rolemembers/Claims Members", "GET", null, {})
+                .then(function (r) {
+                    if (r) {
+                        $(id).append($("<pre>").text(JSON.stringify(r)));
+                    } else {
+                        $(id).append($("<pre>").text(JSON.stringify(r)));
+                    }
+                })
+                .fail(function (e) {
+                    console.error(JSON.parse(e.responseText).exceptionMessage);
+                });
+        }
+
 
         Page.loadAppLists = function (highlight, id) {
             Page.remoteWebAjax("/api/sharepoint/app/lists", "GET", null, {})
